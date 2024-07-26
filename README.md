@@ -7,6 +7,7 @@ check https://docs.python.org/3/library/venv.html for more information
 initenv.sh will do this for you, but it's linux only, so if you're on windows you have to use WSL
 
 Once the environment is created, run 
+
 $ source environment/bin/activate
 
 to activate it
