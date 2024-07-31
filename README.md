@@ -12,6 +12,6 @@ $ source environment/bin/activate (bash)
 
 or
 
-PS> environment/Scripts/Activate.ps1 (PowerShell
+PS> environment/Scripts/Activate.ps1 (PowerShell)
 
 to activate it
