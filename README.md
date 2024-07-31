@@ -4,10 +4,12 @@ IMPORTANT: CREATE A VENV ENVIRONMENT WITH numpy==1.23.5 streamlit==1.22.0 Pillow
 
 check https://docs.python.org/3/library/venv.html for more information
 
-initenv.sh will do this for you, but it's linux only, so if you're on windows you have to use WSL
+initenv.sh or initenv.ps1 will do this for you.
 
 Once the environment is created, run 
 
-$ source environment/bin/activate
+$ source environment/bin/activate (bash)
+or
+PS> environment/Scripts/Activate.ps1 (PowerShell
 
 to activate it
