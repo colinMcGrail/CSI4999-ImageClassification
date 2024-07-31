@@ -9,7 +9,9 @@ initenv.sh or initenv.ps1 will do this for you.
 Once the environment is created, run 
 
 $ source environment/bin/activate (bash)
+
 or
+
 PS> environment/Scripts/Activate.ps1 (PowerShell
 
 to activate it
