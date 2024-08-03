@@ -17,15 +17,12 @@ def authenticate(username, password):
         return None
 
 # Function to classify image
-def classify(image, model, class_names):
+def classify(image, model):
     img = image.resize((224, 224))
     img_array = np.array(img)
-    img_array = np.expand_dims(img_array, axis=0) / 255.0
-    predictions = model.predict(img_array)
-    class_index = np.argmax(predictions)
-    class_name = class_names[class_index]
-    confidence_score = predictions[0][class_index]
-    return class_name, confidence_score
+    img_array = np.expand_dims(img_array, axis=0)# / 255.0
+    return model.predict(img_array)
+
 
 # Initialize session state
 if 'role' not in st.session_state:
@@ -68,19 +65,17 @@ if st.session_state.role:
     st.header('Upload your file here')
 
     file = st.file_uploader('', type=['jpeg', 'jpg', 'png'])
-    model = load_model('./model/osteoarthritis.h5')
-    with open('./model/labels.txt') as f:
-        class_names = [a[:-1].split(' ')[1] for a in f.readlines()]
-        f.close()
+    model = load_model('./model/osteoarthritis-new.keras')
+
 
     if file is not None:
         image = Image.open(file).convert('RGB')
         st.image(image, use_column_width=True)
 
-        class_name, conf_score = classify(image, model, class_names)
+        result = classify(image, model)
 
-        st.write("## {}".format(class_name))
-        st.write("### score: {}%".format(int(conf_score * 1000) / 10))
+        st.write("## {}".format(result))
+        st.write("### score: ")
 
     role = st.session_state.role
     if role == "User":
@@ -120,7 +115,7 @@ else:
         if role:
             st.session_state.role = role
             st.sidebar.success(f"Logged in as {username} with role {role}")
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.sidebar.error("Invalid Username Or Password")
     else:
