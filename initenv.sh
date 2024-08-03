@@ -1,3 +1,4 @@
 python3 -m venv environment
 source environment/bin/activate
-pip install numpy==1.23.5 streamlit==1.22.0 Pillow==9.5.0 keras==2.12.0 tensorflow==2.12.0
+pip install --upgrade streamlit Pillow tensorflow-cpu~=2.17.0 torch==2.4.0+cu121 torchvision==0.19.0+cu121 jax[cpu] --extra-index-url https://download.pytorch.org/whl/cu121
+pip install --upgrade keras
