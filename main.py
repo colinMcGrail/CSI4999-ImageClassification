@@ -72,10 +72,10 @@ if st.session_state.role:
         image = Image.open(file).convert('RGB')
         st.image(image, use_column_width=True)
 
-        result = classify(image, model)
+        result = classify(image, model)[0][0]
 
-        st.write("## {}".format(result))
-        st.write("### score: ")
+        st.write("## Severity rating: {}".format(result))
+        st.write("### Severity of 2 or greater indicates osteoarthritis. ")
 
     role = st.session_state.role
     if role == "User":
