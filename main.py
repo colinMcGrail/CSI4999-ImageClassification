@@ -7,7 +7,7 @@ import numpy as np
 users = {
     "user1": {"password": "password1", "role": "User"},
     "user2": {"password": "password2", "role": "Physician"},
-    "user3": {"password": "password3", "role": "Professional Doctor"},
+    "user3": {"password": "password3", "role": "Specialist"},
 }
 
 def authenticate(username, password):
@@ -97,9 +97,9 @@ if st.session_state.role:
             predictions = response["predictions"]
             st.write("Predictions:", predictions)
 
-    elif role == "Professional Doctor":
-        st.title("Professional Doctor Dashboard")
-        st.write("Welcome to the Professional Doctor Dashboard. You can verify diagnoses and compare with the model's output.")
+    elif role == "Specialist":
+        st.title("Specialist Dashboard")
+        st.write("Welcome to the Specialist Dashboard. You can verify diagnoses and compare with the model's output.")
         annotation = st.text_area("Annotation", "Enter your notes here...")
         if st.button("Analyze Image"):
             # Simulating an API call
