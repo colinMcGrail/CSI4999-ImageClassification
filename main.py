@@ -1,18 +1,33 @@
 import streamlit as st
+import sqlite3
 from keras.models import load_model
 from PIL import Image
 import numpy as np
 
-# Dummy user data
-users = {
-    "user1": {"password": "password1", "role": "User"},
-    "user2": {"password": "password2", "role": "Physician"},
-    "user3": {"password": "password3", "role": "Professional Doctor"},
-}
+# Database setup
+def create_users_table():
+    conn = sqlite3.connect('users.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS users
+                 (username TEXT PRIMARY KEY, role TEXT, password TEXT)''')
+    conn.commit()
+    conn.close()
+
+def add_user_to_db(username, role, password):
+    conn = sqlite3.connect('users.db')
+    c = conn.cursor()
+    c.execute("INSERT INTO users (username, role, password) VALUES (?, ?, ?)", (username, role, password))
+    conn.commit()
+    conn.close()
 
 def authenticate(username, password):
-    if username in users and users[username]["password"] == password:
-        return users[username]["role"]
+    conn = sqlite3.connect('users.db')
+    c = conn.cursor()
+    c.execute("SELECT role FROM users WHERE username=? AND password=?", (username, password))
+    user = c.fetchone()
+    conn.close()
+    if user:
+        return user[0]
     else:
         return None
 
@@ -30,12 +45,19 @@ def classify(image, model, class_names):
 # Initialize session state
 if 'role' not in st.session_state:
     st.session_state.role = None
+if 'page' not in st.session_state:
+    st.session_state.page = 'login'
+
+# Clear fields when changing page
+def reset_fields():
+    st.session_state.username = ""
+    st.session_state.password = ""
+    st.session_state.role_selection = "User"
 
 # Set page config
 st.set_page_config(page_title="MedImage Classifier", page_icon=":hospital:", layout="wide")
 
-
-# # CSS for enhanced styling
+# CSS for enhanced styling
 st.markdown("""
     <style>
         .sidebar .sidebar-content {
@@ -49,19 +71,65 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Display app name before login
-if not st.session_state.role:
-    st.title('MedImage Classifier')
-    st.subheader('AI-Powered Osteoarthritis Diagnosis')
-    st.image("./doctor.png", caption="")
+# Ensure the database is set up
+create_users_table()
 
-if st.session_state.role:
+# Login and Sign Up Page
+if st.session_state.page == 'login':
+    st.sidebar.title('Login')
+
+    # Reset fields if navigating from another page
+    reset_fields()
+
+    username = st.sidebar.text_input("Username")
+    password = st.sidebar.text_input("Password", type="password")
+
+    if st.sidebar.button("Login"):
+        role = authenticate(username, password)
+        if role:
+            st.session_state.role = role
+            st.session_state.page = 'main'
+            st.experimental_rerun()
+        else:
+            st.sidebar.error("Invalid Username Or Password")
+
+    if st.sidebar.button("Sign Up"):
+        st.session_state.page = 'signup'
+        st.experimental_rerun()
+
+elif st.session_state.page == 'signup':
+    st.sidebar.title('Sign Up')
+
+    # Reset fields if navigating from another page
+    reset_fields()
+
+    username = st.text_input("Username")
+    role = st.selectbox("Role", ["User", "Physician", "Professional Doctor"])
+    password = st.text_input("Password", type="password")
+
+    if st.button("Sign Up"):
+        if username and password:
+            try:
+                add_user_to_db(username, role, password)
+                st.success("Account created successfully! You can now [log in](#).")
+                st.session_state.page = 'login'
+                st.experimental_rerun()
+            except sqlite3.IntegrityError:
+                st.error("Username already exists. Please choose another.")
+        else:
+            st.error("Please fill in all fields.")
+
+else:  # Main application view
+    if not st.session_state.role:
+        st.session_state.page = 'login'
+        st.experimental_rerun()
+
     st.sidebar.title(f"Welcome, {st.session_state.role}")
-
 
     # Logout button
     if st.sidebar.button("Logout"):
         st.session_state.role = None
+        st.session_state.page = 'login'
         st.experimental_rerun()
 
     st.title('Osteoarthritis Classification')
@@ -108,20 +176,3 @@ if st.session_state.role:
             st.write("Predictions:", predictions)
             diagnosis = st.selectbox("Verify Diagnosis", ["Correct", "Incorrect"])
             st.write(f"Diagnosis Verified as: {diagnosis}")
-
-else:
-    st.sidebar.title('Login')
-
-    username = st.sidebar.text_input("Username")
-    password = st.sidebar.text_input("Password", type="password")
-
-    if st.sidebar.button("Login"):
-        role = authenticate(username, password)
-        if role:
-            st.session_state.role = role
-            st.sidebar.success(f"Logged in as {username} with role {role}")
-            st.experimental_rerun()
-        else:
-            st.sidebar.error("Invalid Username Or Password")
-    else:
-        st.sidebar.warning("Enter Valid Username and Password")
