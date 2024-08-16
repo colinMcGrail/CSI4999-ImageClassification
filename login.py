@@ -1,23 +1,31 @@
 import streamlit as st
-import streamlit-authenticator as stauth
-import dbutils
+import streamlit_authenticator as stauth
 import yaml
-from yaml.loader
+import sqlite3
+from gendefs import *
+from yaml.loader import SafeLoader
 
 st.title('Login')
 
-username = st.text_input("Username")
-password = st.text_input("Password", type="password")
+with open('users.yaml') as file:
+    users = yaml.load(file, Loader=SafeLoader)
 
-if st.button("Login"):
-    role = dbutils.authenticate(username, password)
-    if role:
-        st.session_state.role = role
-        st.rerun()
-    else:
-        st.error("Invalid Username Or Password")
+authenticator = stauth.Authenticate(
+    users['credentials'],
+    users['cookie']['name'],
+    users['cookie']['key'],
+    users['cookie']['expiry_days']
+)
 
-if st.button("Sign Up"):
-    st.session_state.page = 'signup'
+con, cur = makeconnection()
+
+name, authentication_status, username = authenticator.login('main')
+
+if authentication_status:
+    st.session_state.role = cur.execute('SELECT role FROM Users WHERE username=?', [st.session_state['username']])
     st.rerun()
+elif authentication_status == False:
+    st.error('Username/password is incorrect')
+elif authentication_status == None:
+    st.warning('Please enter your username and password')
 

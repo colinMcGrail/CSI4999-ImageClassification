@@ -1,24 +1,18 @@
 credentials:
   usernames:
     placeholderspecialist:
-      failed_login_attempts: 0 # Will be managed automatically
-      logged_in: False # Will be managed automatically
-      name: John Smith
+      name: Dr. McSpecialist
       password: $2b$12$X5CLT27PC28v5IIz78o1K.7wNODgvbCsylndlHj1eRbHTUR5IO5YC # Will be hashed automatically
     placeholderdoctor:
-      email: rbriggs@gmail.com
-      failed_login_attempts: 0 # Will be managed automatically
-      logged_in: False # Will be managed automatically
-      name: Rebecca Briggs
+      name: Dr. McDoctorate
       password: $2b$12$BFnrX7fqosaniVNmmRkMyuwm25y0v8ifZe6uDdLt3.YQ26Lu/otV. # Will be hashed automatically
     placeholderpatient:
-      email: rbriggs@gmail.com
-      failed_login_attempts: 0 # Will be managed automatically
-      logged_in: False # Will be managed automatically
-      name: Rebecca Briggs
+      name: Dr. No
       password: $2b$12$wESyeprNDKJQAsSgdF3If.T6Sfl1PbeKW4VvSRrKnfUG0CZ2aWZb. # Will be hashed automatically
 cookie:
   expiry_days: 30
   key: some_signature_key
   name: some_cookie_name
-
+preauthorized:
+  emails:
+  - melsby@gmail.com
