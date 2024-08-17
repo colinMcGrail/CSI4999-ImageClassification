@@ -1,6 +1,6 @@
 import sqlite3 as sql
 
-con = sql.connect('data.db')
+con = sql.connect('../data.db')
 cur = con.cursor()
 
 cur.execute(
@@ -29,10 +29,3 @@ cur.execute(
     FOREIGN KEY (human_eval) REFERENCES evals(id));'''
 )
 
-cur.execute(
-'''INSERT INTO users (username,password,role)
-VALUES
-    ("egDoc","physician","physician"),
-    ("egSpec","specialist","specialist"),
-    ("egPat","patient","patient");'''
-)
