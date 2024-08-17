@@ -1,0 +1,59 @@
+from keras.models import load_model
+from PIL import Image
+import numpy as np
+import os
+import sqlite3
+from uuid import uuid4
+
+
+def classifyOsteoarthritis(file):
+    model = load_model('models/osteoarthritis.keras')
+    image = Image.open(file).convert('RGB')
+    img = image.resize((224, 224))
+    img_array = np.array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    return model.predict(img_array)[0][0]
+
+def saveimg(file, dirname):
+    extension = file.name.split('.')[-1]
+    while True:        
+        id = str(uuid4())
+        name = id + '.' + extension
+        directory = 'image/' + dirname + '/'
+        path = os.path.join(directory, name)
+        if not os.path.isfile(path):
+            break
+    with open(path, "wb") as f:
+        f.write(file.getbuffer())
+    return name
+
+def evaluateImage(image, modelname, patientname):
+
+    con = sqlite3.connect("data.db")
+    cur = con.cursor()
+
+    name = saveimg(image, modelname)
+
+    match modelname:
+        case 'osteoarthritis':
+                pred = classifyOsteoarthritis(image)
+        case _:
+                return 137
+
+    evalid = str(uuid4())
+        
+    cur.execute("INSERT INTO evals(id, issuer, rating, comments) VALUES (?,?,?,?)", [evalid, modelname, pred, None])
+
+    cur.execute("INSERT INTO images(filename, patient, type, AI_eval, human_eval) VALUES (?,?,?,?,?)", [name, patientname, modelname, evalid, None])
+
+    con.commit()
+
+    return pred        
+
+
+#def verifyUser(username, password = None, role = None):
+#   con = sqlite3.connect("data.db")
+#    cur = con.cursor()
+#
+#    cur.execute(select)
+

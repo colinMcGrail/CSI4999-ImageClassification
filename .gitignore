@@ -1,3 +1,4 @@
+.venv/
 environment/
 __pycache__/
 models/*

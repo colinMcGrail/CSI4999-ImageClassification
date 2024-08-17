@@ -6,7 +6,7 @@ cur = con.cursor()
 cur.execute(
 '''CREATE TABLE users
    (username    PRIMARY KEY,
-    password    NOT NULL,
+    password,
     role        NOT NULL);''')
 
 cur.execute(
@@ -28,4 +28,7 @@ cur.execute(
     FOREIGN KEY (AI_eval) REFERENCES evals(id),
     FOREIGN KEY (human_eval) REFERENCES evals(id));'''
 )
+
+cur.execute("INSERT INTO users(username, password, role) VALUES (?,?,?)", ['osteoarthritis', None, 'AI'])
+con.commit()
 
