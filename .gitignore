@@ -1,5 +1,5 @@
 environment/
 __pycache__/
-models/
+models/*
 .python-version
 data.db
