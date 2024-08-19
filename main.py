@@ -10,10 +10,15 @@ if "user" not in st.session_state:
 if "flag" not in st.session_state:
     st.session_state.flag = None
 
+if "data" not in st.session_state:
+    st.session_state.data = None
+
 page_dict = {}
 
 if st.session_state.flag == 'signup':
     pg = st.navigation([signup_page])
+elif st.session_state.flag == 'imgpage':
+    pg = st.navigation([imgpage])
 elif st.session_state.role is None:
     pg = st.navigation([login_page])
 else:
