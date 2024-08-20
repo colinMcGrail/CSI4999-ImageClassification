@@ -12,7 +12,8 @@ def classifyOsteoarthritis(file):
     img = image.resize((224, 224))
     img_array = np.array(img)
     img_array = np.expand_dims(img_array, axis=0)
-    return model.predict(img_array)[0][0]
+    prediction = model.predict(img_array)[0][0]
+    return str(prediction)
 
 def saveimg(file, dirname):
     extension = file.name.split('.')[-1]
@@ -37,6 +38,7 @@ def evaluateImage(image, modelname, patientname):
     match modelname:
         case 'osteoarthritis':
                 pred = classifyOsteoarthritis(image)
+                print(pred)
         case _:
                 return 137
 
@@ -50,6 +52,12 @@ def evaluateImage(image, modelname, patientname):
 
     return pred        
 
+def imgtoArray(file):
+
+    image = Image.open(file).convert('RGB')
+    img = image.resize((224, 224))
+    img_array = np.array(img)
+    return img_array
 
 #def verifyUser(username, password = None, role = None):
 #   con = sqlite3.connect("data.db")
