@@ -17,6 +17,13 @@ custom_css = """
             background-color: #462762;  /* Set the background color for the form container */
             padding: 20px;
             border-radius: 10px;
+            width: 100%;
+        }
+        .form-container2 {
+            background-color: #462762;  /* Set the background color for the form container */
+            padding: 1px;
+            border-radius: 0px;
+            width: 100%;
         }
         .stApp {
             # background-color: #462762;
@@ -49,7 +56,13 @@ custom_css = """
 # Inject the custom CSS
 st.markdown(custom_css, unsafe_allow_html=True)
 
+st.markdown('<div class="form-container">', unsafe_allow_html=True)  # Start of custom styled container
+st.markdown('</div>', unsafe_allow_html=True)  # End of custom styled container
+
 st.title('MedImage Classifier')
+st.markdown('<div class="form-container2">', unsafe_allow_html=True)  # Start of custom styled container
+st.markdown('</div>', unsafe_allow_html=True)  # End of custom styled container
+
 st.subheader('Login')
 
 con = sqlite3.connect("data.db")
