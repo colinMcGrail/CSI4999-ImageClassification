@@ -1,4 +1,5 @@
 from keras.models import load_model
+import streamlit as st
 from PIL import Image
 import numpy as np
 import os
@@ -36,7 +37,7 @@ def evaluateImage(image, modelname, patientname):
     name = saveimg(image, modelname)
 
     match modelname:
-        case 'osteoarthritis':
+        case 'Osteoarthritis':
                 pred = classifyOsteoarthritis(image)
                 print(pred)
         case _:
@@ -46,7 +47,7 @@ def evaluateImage(image, modelname, patientname):
         
     cur.execute("INSERT INTO evals(id, issuer, rating, comments) VALUES (?,?,?,?)", [evalid, modelname, pred, None])
 
-    cur.execute("INSERT INTO images(filename, patient, type, AI_eval, human_eval) VALUES (?,?,?,?,?)", [name, patientname, modelname, evalid, None])
+    cur.execute("INSERT INTO images(filename, patient, doctor, type, AI_eval, human_eval) VALUES (?,?,?,?,?,?)", [name, patientname, st.session_state.user, modelname, evalid, None])
 
     con.commit()
 
@@ -58,6 +59,13 @@ def imgtoArray(file):
     img = image.resize((224, 224))
     img_array = np.array(img)
     return img_array
+
+def getnameofuser(username):
+    con = sqlite3.connect("data.db")
+    cur = con.cursor()
+
+    res = cur.execute("SELECT name FROM users WHERE username = ?", [username])
+    name = res.fetchone()[0]
 
 #def verifyUser(username, password = None, role = None):
 #   con = sqlite3.connect("data.db")

@@ -35,15 +35,16 @@ AIrating = []
 HumRating = []
 
 for image in results:
-    pathstr = "image/" + image[2] + "/" + image[0]
+    pathstr = "image/" + image[3] + "/" + image[0]
     index.append(pathstr)
     im64, filetype = imgto64(pathstr)
     encoded = "data:image/" + filetype + ";base64," + im64
     path.append(encoded)
-    username.append(image[1])
-    model.append(image[2])
-    aieval = getEval(image[3])
-    humeval = getEval(image[4])
+    res2 = cur.execute("SELECT name FROM users WHERE username=?", [image[1]])
+    username.append(res2.fetchone()[0])
+    model.append(image[3])
+    aieval = getEval(image[4])
+    humeval = getEval(image[5])
     if aieval is not None:
         AIrating.append(aieval[2])
     else:

@@ -1,5 +1,5 @@
 import streamlit as st
-from pagedefs import *
+from library.pagedefs import *
 
 if "role" not in st.session_state:
     st.session_state.role = None

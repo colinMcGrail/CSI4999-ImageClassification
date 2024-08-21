@@ -11,9 +11,10 @@ patientLanding = st.Page("page/role/patient/patient.py", title="Home")
 physicianLanding = st.Page("page/role/physician/physician.py", title="Home")
 osteoarthmodel = st.Page("page/model/osteoarthritis.py", title="Osteoarthritis Diagnostic")
 imgpage = st.Page("page/general/imgpage.py")
+pneumoniamodel = st.Page("page/model/pneumonia.py", title="Pneumonia Diagnostic")
 
 generalPages = []
 specialistPages = [specialistLanding]
 patientPages = [patientLanding]
 physicianPages = [physicianLanding]
-modelPages = [osteoarthmodel]
+modelPages = [osteoarthmodel, pneumoniamodel]

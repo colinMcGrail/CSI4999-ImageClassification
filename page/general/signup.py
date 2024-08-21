@@ -8,14 +8,16 @@ cur = con.cursor()
 
 form = st.form("signup")
 username = form.text_input("Username")
-role = form.selectbox("Role", [None, "Patient", "Physician", "Specialist"])
+name = form.text_input("Name")
 password = form.text_input("Password", type="password")
+role = form.selectbox("Role", [None, "Patient", "Physician", "Specialist"])
+
 
 
 if form.form_submit_button("Sign up"):
-    if username and password and role:
+    if username and password and role and name:
         try:
-            cur.execute("INSERT INTO users (username,password,role) VALUES(?,?,?)", (username, password, role.lower()))
+            cur.execute("INSERT INTO users (username,password,role,name) VALUES(?,?,?,?)", (username, password, role.lower(), name))
             con.commit()
             st.session_state.flag = "newuser"
             st.rerun()
