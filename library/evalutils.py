@@ -15,24 +15,46 @@ def classifyOsteoarthritis(image):
     img = image.resize((224, 224))
     img_array = np.array(img)
     img_array = np.expand_dims(img_array, axis=0)
-    prediction = model.predict(img_array)[0][0]
-    return str(prediction)
+    pred = model.predict(img_array)[0]              
+    if max(pred) == pred[0]:
+        return 0
+    elif max(pred) == pred[1]:
+        return 1
+    elif max(pred) == pred[2]:
+        return 2
+    elif max(pred) == pred[3]:
+        return 3
+    elif max(pred) == pred[4]:
+        return 4
 
 def classifyPneumonia(image):
     model = load_model('models/pneumonia_convnext.keras')
     img = image.resize((224, 224))
     img_array = np.array(img)
     img_array = np.expand_dims(img_array, axis=0)
-    prediction = model.predict(img_array)[0]#[0]
-    print(str(prediction))
-    return str(prediction)
+    prarr = model.predict(img_array)[0]
+    viral, normal, bacterial = prarr[0], prarr[1], prarr[2]
+    if normal > bacterial and normal > viral:
+        return "Healthy"
+    elif bacterial > viral:
+        return "Bacterial Pneumonia"
+    else:
+        return "Viral Pneumonia"
 
 def classifyBrainTumor(image):
     model = load_model('models/braintumor.keras')
     img =image.resize((256,256))
     img_array = np.array(img)
     img_array = np.expand_dims(img_array, axis=0)
-    return str(prediction)
+    p = model.predict(img_array)[0]
+    if float(p[0]) > float(p[1]) and float(p[0]) > float(p[2]) and float(p[0]) > float(p[3]):
+        return "Glioma"
+    elif float(p[1]) > float(p[2]) and float(p[1]) > float(p[3]):
+        return "Meningioma"
+    elif  float(p[2]) > float(p[3]):
+        return "Healthy"
+    else:
+        return "Pituitary Tumor"
 
 def saveimg(image, dirname):
 
