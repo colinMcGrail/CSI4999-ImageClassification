@@ -6,8 +6,8 @@ from library.elements import *
 
 st.markdown(custom_css, unsafe_allow_html=True)
 
-st.title("Osteoarthritis")
-st.text("Returned values are a decimal approximation of the Kellgren-Lawrence scale")
+st.title("Brain Tumor Recognition")
+st.text("This model is capable of recognizing meningiomas, gliomas, and pituitary tumors.")
 
 
 if st.session_state.data == "spec":
@@ -15,10 +15,10 @@ if st.session_state.data == "spec":
     specialistPageGuard()
 elif st.session_state.data == "write":
     st.session_state.data = None
-    submitfuncGuard("Osteoarthritis")
+    submitfuncGuard("Brain Tumor")
 elif st.session_state.data == "AI":
     st.session_state.data = None
-    AIfuncGuard("Osteoarthritis")
+    AIfuncGuard("Brain Tumor")
 elif st.session_state.data == "imagePage":
     st.session_state.data = None
     imagePage()

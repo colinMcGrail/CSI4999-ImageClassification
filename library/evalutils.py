@@ -1,10 +1,14 @@
 from keras.models import load_model
+import keras
 import streamlit as st
 from PIL import Image
 import numpy as np
 import os
+import time
 import sqlite3
 from uuid import uuid4
+
+
 
 def classifyOsteoarthritis(image):
     model = load_model('models/osteoarthritis.keras')
@@ -14,15 +18,28 @@ def classifyOsteoarthritis(image):
     prediction = model.predict(img_array)[0][0]
     return str(prediction)
 
-def saveimg(image, dirname):
+def classifyPneumonia(image):
+    model = load_model('models/pneumonia_convnext.keras')
+    img = image.resize((224, 224))
+    img_array = np.array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    prediction = model.predict(img_array)[0]#[0]
+    print(str(prediction))
+    return str(prediction)
 
-    print(str(image))
+def classifyBrainTumor(image):
+    model = load_model('models/braintumor.keras')
+    img =image.resize((256,256))
+    img_array = np.array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    return str(prediction)
+
+def saveimg(image, dirname):
 
     while True:        
         id = str(uuid4())
         name = id + '.png'
-        directory = 'image/' + dirname + '/'
-        path = os.path.join(directory, name)
+        path = 'image/' + name
         if not os.path.isfile(path):
             break
 
@@ -40,7 +57,10 @@ def evaluateImage(image, modelname, patientname):
     match modelname:
         case 'Osteoarthritis':
                 pred = classifyOsteoarthritis(image)
-                print(pred)
+        case 'Pneumonia':
+                pred = classifyPneumonia(image)
+        case 'Brain Tumor':
+                pred = classifyBrainTumor(image)
         case _:
                 return 137
 
@@ -52,7 +72,7 @@ def evaluateImage(image, modelname, patientname):
 
     con.commit()
 
-    return pred        
+    return name        
 
 def imgtoArray(file):
 
@@ -64,7 +84,6 @@ def imgtoArray(file):
 def getnameofuser(username):
     con = sqlite3.connect("data.db")
     cur = con.cursor()
-
     res = cur.execute("SELECT name FROM users WHERE username = ?", [username])
     name = res.fetchone()[0]
 
